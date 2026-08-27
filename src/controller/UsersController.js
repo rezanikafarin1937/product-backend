@@ -7,7 +7,6 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-
 const Register = async (req, res, next) => {
   const schema = {
     name: Joi.string().min(3).max(50).required().messages({
@@ -41,11 +40,8 @@ const Register = async (req, res, next) => {
   //create hash password
   const hashedPassword = await bcrypt.hash(req.body.password, 12);
 
-
   // create token
   // const token = crypto.randomBytes(32).toString("hex");
-  
-
 
   // create hash token
   // const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
@@ -62,8 +58,10 @@ const Register = async (req, res, next) => {
 
   const result = await table.insertRecord(userData);
 
-  const token = jwt.sign({id : result.insertId,name : req.body.name},process.env.SECRET_KEY)
-
+  const token = jwt.sign(
+    { id: result.insertId, name: req.body.name },
+    process.env.SECRET_KEY,
+  );
 
   res.status(201).json({
     message: "Registered successfully",
@@ -119,7 +117,10 @@ const Login = async (req, res, next) => {
 
   // create new token
   // const token = crypto.randomBytes(32).toString("hex");
-    const token = jwt.sign({id : user.id,name : user.name},process.env.SECRET_KEY)
+  const token = jwt.sign(
+    { id: user.id, name: user.name },
+    process.env.SECRET_KEY,
+  );
 
   // create hash token
   // const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
@@ -144,6 +145,5 @@ const Login = async (req, res, next) => {
     },
   });
 };
-
 
 export { Register, Login };
