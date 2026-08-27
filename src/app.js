@@ -21,7 +21,7 @@ app.use("/api/users", UsersRoutes);
 
 // Web Routes
 
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 5500;
 app.listen(port, () => {
-  console.log("Server running on port 8000");
+  console.log(`Server running on port ${port}`);
 });
