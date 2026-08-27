@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 
-import UsersRoutes from "./router/api/UsersRoutes.js";
+import UsersRoutes from "./routes/api/UsersRoutes.js";
 
 const app = express();
 
