@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 
 import UsersRoutes from "./routes/api/UsersRoutes.js";
+import ProductsRoutes from "./routes/api/ProductsRoutes.js"
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(express.static("public"));
 
 // API Routes
 app.use("/api/users", UsersRoutes);
+app.use("/api/products", ProductsRoutes);
 
 // Web Routes
 
