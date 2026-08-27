@@ -1,9 +1,6 @@
 import mysql from "mysql2";
-// const mysql = require("mysql2");
-
 import dotenv from 'dotenv';
 dotenv.config();
-// require('dotenv').config();
 
 const pool = mysql
   .createPool({
@@ -14,5 +11,4 @@ const pool = mysql
   })
   .promise();
 
-  // module.exports = pool;
   export default pool;
