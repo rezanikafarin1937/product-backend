@@ -7,7 +7,8 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const Register = async (req, res, next) => {
+class UsersController{
+  static Register = async (req, res, next) => {
   const schema = {
     name: Joi.string().min(3).max(50).required().messages({
       "string.min": "تعداد کارکتر برای فیلد نام کم است",
@@ -74,7 +75,7 @@ const Register = async (req, res, next) => {
   });
 };
 
-const Login = async (req, res, next) => {
+  static Login = async (req, res, next) => {
   const schema = {
     mobile: Joi.string()
       .pattern(/^09\d{9}$/)
@@ -145,5 +146,5 @@ const Login = async (req, res, next) => {
     },
   });
 };
-
-export { Register, Login };
+}
+export default UsersController;
