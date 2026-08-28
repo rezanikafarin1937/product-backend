@@ -5,7 +5,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon ./src/app.js"
+    "start": "nodemon ./src/app.js",
+    "fake" : "node ./src/seeders/index.js"
   },
   "author": "",
   "license": "ISC",
