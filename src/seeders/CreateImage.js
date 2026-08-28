@@ -3,7 +3,7 @@ import path from "path";
 
 export async function createImages() {
   const publicPath = path.join(process.cwd(), "public");
-  const sourcePath = path.join(process.cwd(), "source-images");
+  const sourcePath = path.join(process.cwd(), "src/seeders/source-images");
   const imagesPath = path.join(publicPath, "images");
 
   // ساخت public/images
