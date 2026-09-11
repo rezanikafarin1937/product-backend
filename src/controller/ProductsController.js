@@ -1,8 +1,39 @@
-import { IndexModel } from "../models/ProductsModel.js";
+import { IndexModel,getProduct } from "../models/ProductsModel.js";
+import {searchProductsModel} from "../models/ProductsModel.js";
+
 class ProductsController {
-  static Index = async (req, res) => {
+  static Index = (req, res) => {
     IndexModel(req,res)
   };
+  static Show = (req,res) =>{
+    getProduct(req,res)
+  }
+
+
+
+  static SearchProducts = async (req, res) => {
+  try {
+    const { title } = req.query;
+
+    if (!title || !title.trim()) {
+      return res.status(400).json({
+        message: "متن جستجو را وارد کنید",
+      });
+    }
+
+    const products = await searchProductsModel.getProductsByTitle(title.trim());
+
+    return res.status(200).json(products);
+
+  } catch (error) {
+    console.log("Search Products Error:", error);
+
+    return res.status(500).json({
+      message: "خطا در جستجوی محصولات",
+    });
+  }
+};
+
 }
 
 export default ProductsController;
