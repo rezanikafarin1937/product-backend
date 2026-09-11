@@ -82,35 +82,42 @@ class Table {
     return rows;
   }
 
-  // async getProductsByTitle(value) {
-  //   const sql = `
-  //     SELECT
-  //       products.*,
-  //       images.Path AS image
-  //     FROM products
-  //     LEFT JOIN images
-  //       ON products.id = images.imageId
-  //     WHERE products.title LIKE ?
-  //   `;
+  async getProductsByTitle(value, page = 1, per_page = 10) {
+    const offset = (page - 1) * per_page;
 
-  //   const [rows] = await pool.query(sql, [`%${value}%`]);
+    // تعداد کل محصولات
+    const countSql = `
+    SELECT COUNT(*) AS total
+    FROM products
+    WHERE title LIKE ?
+  `;
 
-  //   return rows;
-  // }
+    const [countRows] = await pool.query(countSql, [`%${value}%`]);
 
-  async getProductsByTitle(value) {
+    const total = countRows[0].total;
+
+    const pages = Math.ceil(total / per_page);
+
+    // دریافت محصولات صفحه مورد نظر
     const sql = `
     SELECT
       products.*,
       images.Path AS imagePath
-    FROM products
+    FROM (
+      SELECT *
+      FROM products
+      WHERE title LIKE ?
+      ORDER BY id
+      LIMIT ? OFFSET ?
+    ) AS products
     LEFT JOIN images
       ON products.id = images.imageId
-    WHERE products.title LIKE ?
+    ORDER BY products.id
   `;
 
-    const [rows] = await pool.query(sql, [`%${value}%`]);
+    const [rows] = await pool.query(sql, [`%${value}%`, per_page, offset]);
 
+    // تبدیل ردیف‌های تکراری تصاویر به یک محصول
     const products = [];
 
     rows.forEach((row) => {
@@ -132,7 +139,21 @@ class Table {
       }
     });
 
-    return products;
+    const pagination = {
+      first: pages > 0 ? 1 : null,
+      prev: page > 1 ? page - 1 : null,
+      next: page < pages ? page + 1 : null,
+      last: pages,
+      pages: pages,
+      page: page,
+      per_page: per_page,
+      total: total,
+    };
+
+    return {
+      data: products,
+      pagination,
+    };
   }
 }
 

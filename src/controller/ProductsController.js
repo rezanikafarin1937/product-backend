@@ -13,7 +13,7 @@ class ProductsController {
 
   static SearchProducts = async (req, res) => {
   try {
-    const { title } = req.query;
+     const { title, page = 1, per_page = 10 } = req.query;
 
     if (!title || !title.trim()) {
       return res.status(400).json({
@@ -21,7 +21,7 @@ class ProductsController {
       });
     }
 
-    const products = await searchProductsModel.getProductsByTitle(title.trim());
+    const products = await searchProductsModel.getProductsByTitle(title.trim(),Number(page),Number(per_page));
 
     return res.status(200).json(products);
 
