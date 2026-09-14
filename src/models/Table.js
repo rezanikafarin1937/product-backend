@@ -10,6 +10,84 @@ class Table {
     return result;
   };
 
+
+
+getByPagination = async (req, res) => {
+    try {
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+
+        // گرفتن محصولات
+        const dataSql = `
+            SELECT *
+            FROM ${this.tableName}
+            LIMIT ? OFFSET ?
+        `;
+
+        // تعداد کل محصولات
+        const countSql = `
+            SELECT COUNT(*) AS total
+            FROM ${this.tableName}
+        `;
+
+        const [[countResult], [products]] = await Promise.all([
+            pool.query(countSql),
+            pool.query(dataSql, [limit, skip])
+        ]);
+
+        const total = countResult[0].total;
+
+        // اگر محصولی وجود داشت، تصاویر آنها را بگیر
+        if (products.length > 0) {
+
+            const productIds = products.map(product => product.id);
+
+            const placeholders = productIds.map(() => '?').join(',');
+
+            const imageSql = `
+                SELECT imageId, Path
+                FROM images
+                WHERE imageId IN (${placeholders})
+            `;
+
+            const [images] = await pool.query(
+                imageSql,
+                productIds
+            );
+
+            // قرار دادن تصاویر داخل هر محصول
+            products.forEach(product => {
+
+                product.images = images
+                    .filter(image => image.imageId === product.id)
+                    .map(image => image.Path);
+
+            });
+        }
+
+        const hasMore = skip + products.length < total;
+
+        return res.status(200).json({
+            data: products,
+            page,
+            limit,
+            total,
+            hasMore
+        });
+
+    } catch (error) {
+
+        console.log("Pagination Error:", error);
+
+        return res.status(500).json({
+            message: "Server Error"
+        });
+    }
+};
+
+
+
   getRecord = async (id) => {
     const [data] = await pool.query(
       `select * from ${this.tableName} where id = ?`,

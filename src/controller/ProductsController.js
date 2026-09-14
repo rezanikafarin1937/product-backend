@@ -1,4 +1,4 @@
-import { IndexModel,getProduct } from "../models/ProductsModel.js";
+import { IndexModel,getProduct,getByPagination } from "../models/ProductsModel.js";
 import {searchProductsModel} from "../models/ProductsModel.js";
 
 class ProductsController {
@@ -7,6 +7,14 @@ class ProductsController {
   };
   static Show = (req,res) =>{
     getProduct(req,res)
+  }
+
+  // static InfiniteLoading = (req,res) => {
+  //   getByInfinite(req,res)
+  // }
+
+  static Pagination = (req,res) => {
+    getByPagination(req,res)
   }
 
 

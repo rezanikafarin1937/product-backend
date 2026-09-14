@@ -45,7 +45,6 @@ export const IndexModel = async (req, res) => {
     });
 
     res.json(products);
-
   } catch (error) {
     console.error(error);
 
@@ -56,6 +55,11 @@ export const IndexModel = async (req, res) => {
 };
 
 
+export const getByPagination = async (req, res) => {
+  const table = new Table("products");
+  const result = await table.getByPagination(req, res);
+  return result;
+};
 
 export const getProduct = async (req, res) => {
   try {
@@ -76,12 +80,12 @@ export const getProduct = async (req, res) => {
         ON p.id = i.imageId
       WHERE p.id = ?
       `,
-      [id]
+      [id],
     );
 
     if (rows.length === 0) {
       return res.status(404).json({
-        message: "Product not found"
+        message: "Product not found",
       });
     }
 
@@ -93,18 +97,15 @@ export const getProduct = async (req, res) => {
       discount: rows[0].discount,
       catId: rows[0].catId,
 
-      images: rows
-        .map(row => row.path)
-        .filter(Boolean)
+      images: rows.map((row) => row.path).filter(Boolean),
     };
 
     res.status(200).json(product);
-
   } catch (error) {
     console.error("Get product error:", error);
 
     res.status(500).json({
-      message: "Server error"
+      message: "Server error",
     });
   }
 };
